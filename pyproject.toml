@@ -1,0 +1,46 @@
+[project]
+name = "datbox-workspace"
+version = "0.0.0"
+description = "Workspace root for the Data Analyst Toolbox (dat). Not published."
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+datbox-core = { workspace = true }
+datbox = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+    "pyright>=1.1.380",
+    "pre-commit>=3.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["packages/*/src", "packages/*/tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pyright]
+include = ["packages/*/src", "packages/*/tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["packages/*/tests"]
+addopts = "-q"
