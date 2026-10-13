@@ -1,0 +1,81 @@
+# OQ-1 prototype spec. The same file drives all three backends.
+# Shape is a first draft of the datbox-viz contract (ADR-004, ADR-014):
+# sources are tables; every number is an aggregate over a source (ADR-016 —
+# no calculated fields in the viz layer); layout is a 12-column grid.
+
+title: Sales Overview
+subtitle: FY2026 · seeded fake data (500 orders)
+
+source:
+  name: orders            # in datbox-viz this becomes a DuckDB/Parquet/CSV source
+  path: sales.json
+
+filters:                  # global dimension filters, rendered as one row of controls
+  - field: region
+  - field: product_line
+
+layout:
+  columns: 12
+
+components:
+  - id: kpi_revenue
+    type: kpi
+    title: Total revenue
+    measure: { field: revenue, agg: sum }
+    format: currency
+    grid: { w: 4 }
+
+  - id: kpi_orders
+    type: kpi
+    title: Orders
+    measure: { field: order_id, agg: count }
+    format: integer
+    grid: { w: 4 }
+
+  - id: kpi_aov
+    type: kpi
+    title: Avg order value
+    measure: { field: revenue, agg: mean }
+    format: currency
+    grid: { w: 4 }
+
+  - id: rev_by_region
+    type: bar
+    title: Revenue by region
+    x: { field: region }
+    y: { field: revenue, agg: sum }
+    format: currency
+    sort: desc
+    grid: { w: 6, h: 320 }
+
+  - id: rev_by_month
+    type: line
+    title: Monthly revenue by product line
+    x: { field: month }
+    y: { field: revenue, agg: sum }
+    series: { field: product_line }
+    format: currency
+    grid: { w: 6, h: 320 }
+
+  - id: rev_by_line
+    type: pie
+    title: Revenue share by product line
+    category: { field: product_line }
+    value: { field: revenue, agg: sum }
+    format: currency
+    grid: { w: 4, h: 320 }
+
+  - id: orders_table
+    type: table
+    title: Orders
+    columns:
+      - { field: order_id,     label: Order }
+      - { field: order_date,   label: Date }
+      - { field: region,       label: Region }
+      - { field: product_line, label: Product line }
+      - { field: rep,          label: Rep }
+      - { field: units,        label: Units,   format: integer }
+      - { field: revenue,      label: Revenue, format: currency }
+    sort: { field: order_date, dir: desc }
+    page_size: 25
+    grid: { w: 8, h: 320 }
