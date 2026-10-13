@@ -4,6 +4,7 @@ Usage: python build.py [--node-modules PATH] [--out DIR]
 Produces oq1-echarts.html, oq1-plotly.html, oq1-vegalite.html — each a single
 self-contained file per the 03_ARCHITECTURE.md contract.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -25,7 +26,9 @@ BACKENDS = {
     },
     "plotly": {
         "label": "Plotly.js",
-        "libs": [("plotly.js-basic-dist-min/plotly-basic.min.js", "plotly.js-basic-dist-min/LICENSE")],
+        "libs": [
+            ("plotly.js-basic-dist-min/plotly-basic.min.js", "plotly.js-basic-dist-min/LICENSE")
+        ],
         "backend": RT / "backend_plotly.js",
     },
     "vegalite": {
@@ -46,14 +49,23 @@ def script_safe(js: str) -> str:
 
 
 def json_for_script(obj) -> str:
-    return json.dumps(obj, separators=(",", ":")).replace("</", "<\\/").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
+    return (
+        json.dumps(obj, separators=(",", ":"))
+        .replace("</", "<\\/")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
 
 
 def vendored(nm: Path, lib: str, license_path: str) -> str:
     js = (nm / lib).read_text(encoding="utf-8")
     pkg = json.loads((nm / lib.split("/")[0] / "package.json").read_text())
-    header = f"/*! {pkg['name']} v{pkg['version']} — {pkg.get('license', '?')} — vendored by datbox-viz; see LICENSE text below */\n"
-    # Bundles without a license header in the minified file get the package's LICENSE prepended (ADR-003 §3).
+    header = (
+        f"/*! {pkg['name']} v{pkg['version']} — {pkg.get('license', '?')} — "
+        "vendored by datbox-viz; see LICENSE text below */\n"
+    )
+    # Bundles with no license header in the minified file get the package's
+    # LICENSE prepended (ADR-003 §3).
     if not js.lstrip().startswith(("/*", "//")):
         lic = (nm / license_path).read_text(encoding="utf-8").strip().replace("*/", "* /")
         header += "/*\n" + lic + "\n*/\n"
@@ -71,7 +83,7 @@ def build(slug: str, spec: dict, data: list, nm: Path, out_dir: Path) -> Path:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{spec['title']} — {b['label']} (OQ-1 prototype)</title>
+<title>{spec["title"]} — {b["label"]} (OQ-1 prototype)</title>
 <!-- datbox-viz OQ-1 prototype. Self-contained: no external scripts, styles, fonts, or requests.
      This file embeds its data; treat it with the same care as the data inside it. -->
 <style>
