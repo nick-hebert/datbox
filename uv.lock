@@ -6,6 +6,7 @@ requires-python = ">=3.11"
 members = [
     "datbox",
     "datbox-core",
+    "datbox-viz",
     "datbox-workspace",
 ]
 
@@ -216,6 +217,25 @@ requires-dist = [
     { name = "typer", specifier = ">=0.12" },
 ]
 provides-extras = ["keyring"]
+
+[[package]]
+name = "datbox-viz"
+version = "0.0.1"
+source = { editable = "packages/datbox-viz" }
+dependencies = [
+    { name = "datbox-core" },
+    { name = "pydantic" },
+    { name = "pyyaml" },
+    { name = "typer" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "datbox-core", editable = "packages/datbox-core" },
+    { name = "pydantic", specifier = ">=2.7" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "typer", specifier = ">=0.12" },
+]
 
 [[package]]
 name = "datbox-workspace"

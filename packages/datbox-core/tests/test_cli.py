@@ -22,7 +22,8 @@ def test_version_flag() -> None:
     assert __version__ in result.output
 
 
-def test_plugins_command_with_none_installed() -> None:
+def test_plugins_command_with_none_installed(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("datbox_core.cli.discover", lambda: ([], []))
     result = runner.invoke(build_app(), ["plugins"])
     assert result.exit_code == 0
     assert "No plugins installed" in result.output

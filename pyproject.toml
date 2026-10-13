@@ -14,6 +14,7 @@ members = ["packages/*"]
 [tool.uv.sources]
 datbox-core = { workspace = true }
 datbox = { workspace = true }
+datbox-viz = { workspace = true }
 
 [dependency-groups]
 dev = [
@@ -45,4 +46,4 @@ venv = ".venv"
 
 [tool.pytest.ini_options]
 testpaths = ["packages/*/tests"]
-addopts = "-q"
+addopts = "-q --import-mode=importlib"

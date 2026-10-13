@@ -47,14 +47,16 @@ from pydantic import BaseModel
 from datbox_core.config import load_profile
 from datbox_core.writers import write
 
+
 class SalesforceSettings(BaseModel):
     instance_url: str
 
-profile = load_profile()                              # honours --profile / $DAT_PROFILE
+
+profile = load_profile()  # honours --profile / $DAT_PROFILE
 settings = profile.section("salesforce", SalesforceSettings)
 token = profile.secret("api_token")
-frame = profile.source("marts").load()                # polars LazyFrame
-write(frame, "out/fct_orders.parquet")                # or .csv / .duckdb
+frame = profile.source("marts").load()  # polars LazyFrame
+write(frame, "out/fct_orders.parquet")  # or .csv / .duckdb
 ```
 
 Register a subcommand with an entry point and `dat <name>` exists on install:
